@@ -26,7 +26,7 @@ const tripsSampleData = [
     "userID": 1,
     "destinationID": 3,
     "travelers": 1,
-    "date": "2022/06/08",
+    "date": "2022/11/08",
     "duration": 7,
     "status": "approved",
     "suggestedActivities": []
