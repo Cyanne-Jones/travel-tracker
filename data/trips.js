@@ -56,7 +56,7 @@ const tripsSampleData = [
     "userID": 2,
     "destinationID": 6,
     "travelers": 1,
-    "date": "2022/07/08",
+    "date": "2022/06/08",
     "duration": 7,
     "status": "approved",
     "suggestedActivities": []
@@ -88,6 +88,16 @@ const tripsSampleData = [
     "travelers": 1,
     "date": "2022/07/08",
     "duration": 7,
+    "status": "approved",
+    "suggestedActivities": []
+  }, 
+  {
+    "id": 10,
+    "userID": 1,
+    "destinationID": 10,
+    "travelers": 1,
+    "date": "2022/06/05",
+    "duration": 40,
     "status": "approved",
     "suggestedActivities": []
   }
