@@ -11,7 +11,13 @@ describe('TravelersRepository', function() {
     travelersRepository = new TravelersRepository(travelersSampleData);
   })
 
-  it('should be a function', function() {
+  it('Should be a function', function() {
     expect(TravelersRepository).to.be.a('function');
   });
+
+  it('Should hold travelers\' information', function() {
+    expect(TravelersRepository.travelers).to.equal(travelersSampleData);
+  });
+  
+  
 });
