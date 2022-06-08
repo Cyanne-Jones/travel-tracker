@@ -148,8 +148,8 @@ describe('TripsRepository', () => {
   });
 
   it('Should be able to return a traveler\'s past trips', () => {
-    expect(tripsRepository.getTravelerPastTrips(2, Date.now())).to.deep.equal(
-      {
+    expect(tripsRepository.getTravelerPastTrips(3)).to.deep.equal(
+      [{
         "id": 8,
         "userID": 3,
         "destinationID": 8,
@@ -158,8 +158,22 @@ describe('TripsRepository', () => {
         "duration": 8,
         "status": "approved",
         "suggestedActivities": []
-      }
+      }]
     );
   });
 
+  it('Should be able to return a traveler\'s future trips', () => {
+    expect(tripsRepository.getTravelerFutureTrips(2)).to.deep.equal([
+      {
+        "id": 4,
+        "userID": 2,
+        "destinationID": 4,
+        "travelers": 1,
+        "date": "2022/09/16",
+        "duration": 8,
+        "status": "approved",
+        "suggestedActivities": []
+      }
+    ]);
+  });
 });
