@@ -16,8 +16,10 @@ describe('Traveler', () => {
   });
 
   it('Should hold a traveler\'s name', () => {
-    expect(traveler.name).to.equal("Ham Leadbeater");
+    expect(traveler.name).to.equal('Ham Leadbeater');
   });
 
-  
+  it('Should be able to return traveler\'s first name', () => {
+    expect(traveler.returnFirstName()).to.equal('Ham');
+  });
 });
