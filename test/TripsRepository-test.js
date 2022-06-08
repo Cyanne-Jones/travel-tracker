@@ -147,4 +147,19 @@ describe('TripsRepository', () => {
     );
   });
 
+  it('Should be able to return a traveler\'s past trips', () => {
+    expect(tripsRepository.getTravelerPastTrips(2, Date.now())).to.deep.equal(
+      {
+        "id": 8,
+        "userID": 3,
+        "destinationID": 8,
+        "travelers": 1,
+        "date": "2020/09/16",
+        "duration": 8,
+        "status": "approved",
+        "suggestedActivities": []
+      }
+    );
+  });
+
 });
