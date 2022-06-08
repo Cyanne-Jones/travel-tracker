@@ -11,11 +11,19 @@ class TripsRepository {
     return travelersTrips;
   };
 
-  getTravelerPastTrips(idNum) {
+  getTravelerTripsInTime(idNum, time) {
     const userTrips = this.getTripsByTravelerId(idNum);
-    const userPastTrips = userTrips.filter(trip => dayjs(trip.date).isBefore(Date.now()));
-    return userPastTrips
+    let userTripsInTime;
+    if(time === 'past') {
+      userTripsInTime = userTrips.filter(trip => dayjs(trip.date).isBefore(Date.now()));
+    } else if (time === 'future') {
+      userTripsInTime =  userTrips.filter(trip => {
+        return dayjs(trip.date) > Date.now()
+      })
+    };
+    return userTripsInTime;
   };
+  
 };
 
 export default TripsRepository;

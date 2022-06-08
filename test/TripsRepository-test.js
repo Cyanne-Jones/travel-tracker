@@ -71,7 +71,7 @@ describe('TripsRepository', () => {
           "userID": 2,
           "destinationID": 6,
           "travelers": 1,
-          "date": "2022/07/08",
+          "date": "2022/06/08",
           "duration": 7,
           "status": "approved",
           "suggestedActivities": []
@@ -148,7 +148,7 @@ describe('TripsRepository', () => {
   });
 
   it('Should be able to return a traveler\'s past trips', () => {
-    expect(tripsRepository.getTravelerPastTrips(3)).to.deep.equal(
+    expect(tripsRepository.getTravelerTripsInTime(3, 'past')).to.deep.equal(
       [{
         "id": 8,
         "userID": 3,
@@ -163,7 +163,7 @@ describe('TripsRepository', () => {
   });
 
   it('Should be able to return a traveler\'s future trips', () => {
-    expect(tripsRepository.getTravelerFutureTrips(2)).to.deep.equal([
+    expect(tripsRepository.getTravelerTripsInTime(2, 'future')).to.deep.equal([
       {
         "id": 4,
         "userID": 2,
