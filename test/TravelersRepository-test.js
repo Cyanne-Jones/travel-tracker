@@ -23,5 +23,14 @@ describe('TravelersRepository', function() {
     expect(travelersRepository.travelers).to.equal(travelersSampleData);
   });
   
-  
+  it('Should return a user based on their id number', function() {
+    expect(travelersRepository.getTravelerByidNum(3)).to.deep. equal(
+      {
+        "id": 3,
+        "name": "Sibby Dawidowitsch",
+        "travelerType": "shopper",
+      }
+    );
+  });
+
 });
