@@ -1,6 +1,6 @@
 class Traveler {
-  constructor() {
-
+  constructor(traveler) {
+    this.name = traveler.name;
   }
 };
 
