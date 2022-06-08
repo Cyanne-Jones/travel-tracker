@@ -90,6 +90,16 @@ const tripsSampleData = [
     "duration": 7,
     "status": "approved",
     "suggestedActivities": []
+  }, 
+  {
+    "id": 10,
+    "userID": 1,
+    "destinationID": 10,
+    "travelers": 1,
+    "date": "2022/06/05",
+    "duration": 40,
+    "status": "approved",
+    "suggestedActivities": []
   }
 ];
 
