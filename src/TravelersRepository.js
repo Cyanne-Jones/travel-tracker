@@ -3,7 +3,7 @@ class TravelersRepository {
     this.travelers = travelersData;
   }
 
-  getTravelerByidNum(idNum) {
+  getTravelerByIdNum(idNum) {
     const correctTraveler = this.travelers.find(traveler => traveler.id === idNum);
     return correctTraveler;
   };
