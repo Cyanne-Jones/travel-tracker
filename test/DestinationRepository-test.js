@@ -58,5 +58,16 @@ describe('Destination Repository', () => {
     );
   });
 
-  
+  it('Should be able to return a destination by an id number', () => {
+    expect(destinationRepository.getDestinationById(4)).to.deep.equal(
+      {
+        "id": 4,
+        "destination": "c",
+        "estimatedLodgingCostPerDay": 65,
+        "estimatedFlightCostPerPerson": 350,
+        "image": "https://images.unsplash.com/photo-1558029697-a7ed1a4b94c0?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1650&q=80",
+        "alt": "boats at a dock during the day time"
+      }
+    );
+  });
 });
