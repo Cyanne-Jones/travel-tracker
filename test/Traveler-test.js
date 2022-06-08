@@ -14,4 +14,10 @@ describe('Traveler', () => {
   it('Should be a function', () => {
     expect(Traveler).to.be.a('function')
   });
+
+  it('Should hold a traveler\'s name', () => {
+    expect(traveler.name).to.equal("Ham Leadbeater");
+  });
+
+  
 });
