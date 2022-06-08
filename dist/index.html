@@ -4,13 +4,117 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Webpack Starter Kit</title>
+  <title>TravelBug</title>
 </head>
 <body>
-  <img src="./images/turing-logo.png" alt="turing logo">
-  
-  <!-- Do not include the scripts.js or class files here - it is done by the webpack server -->
+  <nav>
+    <h1>travelbug</h1>
+    <div class="greeting">
+      <h2 id="userGreetingText">hello, cyanne!</h2>
+      <h3 id="todaysDateText">today's date is 2022/06/07</h3>
+    </div>
+  </nav>
+  <main>
+    <div class="plan-trip-card main-card">
+      <h2 class="plan-header card-header">plan a trip!</h2>
+      <form class="plan-trip-form">
+        <label for="destination-datalist">destination</label>
+        <input type="text" list="destinations" id="destination-datalist">
+        <datalist id="destinations">
+          <option value="Lima, Peru"></option>
+          <option value="Stockholm, Sweden"></option>
+          <option value="Sydney, Austrailia"></option>
+          <option value="Cartagena, Colombia"></option>
+          <option value="Madrid, Spain"></option>
+          <option value="Jakarta, Indonesia"></option>
+          <option value="Paris, France"></option>
+          <option value="Tokyo, Japan"></option>
+          <option value="Amsterdam, Netherlands"></option>
+          <option value="Toronto, Canada"></option>
+          <option value="Mikonos, Greece"></option>
+          <option value="Wellington, New Zealand"></option>
+          <option value="St. Petersburg, Russia"></option>
+          <option value="Marrakesh, Morocco"></option>
+          <option value="Manila, Philippines"></option>
+          <option value="Bangkok, Thailand"></option>
+          <option value="Jaipur, India"></option>
+          <option value="Cape Town, South Africa"></option>
+          <option value="Quito, Ecuador"></option>
+          <option value="Miami, Florida"></option>
+          <option value="Tulum, Mexico"></option>
+          <option value="Rome, Italy"></option>
+          <option value="Copenhagen, Denmark"></option>
+          <option value="Vilnius, Lithuania"></option>
+          <option value="New York, New York"></option>
+          <option value="London, England"></option>
+          <option value="San Francisco, California"></option>
+          <option value="San Juan, Puerto Rico"></option>
+          <option value="Willemstad, Curaçao"></option>
+          <option value="Antananarivo, Madagascar"></option>
+          <option value="Colombo, Sri Lanka"></option>
+          <option value="Kathmandu, Nepal"></option>
+          <option value="Brussels, Belgium"></option>
+          <option value="Seoul, South Korea"></option>
+          <option value="Anchorage, Alaska"></option>
+          <option value="Reykjavík, Iceland"></option>
+          <option value="Frankfurt, Germany"></option>
+          <option value="Helsinki, Finland"></option>
+          <option value="Porto, Portugal"></option>
+          <option value="La Isla Tortuga, Costa Rica"></option>
+          <option value="Montego Bay, Jamaica"></option>
+          <option value="Santo Domingo, Dominican Republic"></option>
+          <option value="Nassau, The Bahamas"></option>
+          <option value="Caye Caulker, Belize"></option>
+          <option value="Calgary, Canada"></option>
+          <option value="Victoria, Seychelles"></option>
+          <option value="Zürich, Switzerland"></option>
+          <option value="Dar es Salaam, Tanzania"></option>
+          <option value="Castries, St Lucia"></option>
+          <option value="Hobart, Tasmania"></option>
+        </datalist>
+        <label for="trip-length-input">length of trip? (# days)</label>
+        <input id="trip-length-input" type="number" step="1">
+        <label for="number-people-input">how many people?</label>
+        <input id="number-people-input" type="number" step="1">
+        <label for="departure-date-input">departure date</label>
+        <input id="departure-date-input" type="text" placeholder="yyyy/mm/dd">
+        <button id="submitTripButton">submit</button>
+      </form>
+      <div class="trip-cost-display">
+        <h3 class="total-cost-header">total cost</h3>
+        <div class="total-cost-box">
+          <p class="total-cost-in-dollars">$736.77*</p>
+        </div>
+        <p class="disclaimer">*prices include a 10% travel agent fee</p>
+      </div>
+      <h3 class="'total-cost-for-year">$420 spent this year*</h3>
+    </div> 
+    <div class="user-trips-card main-card">
+      <h2 class="user-trips-header card-header">your trips</h2>
+      <div class="upcoming-trips-container trips-display-container">
+        <h3 class="upcoming-trips-header trips-display-header">upcoming</h3>
+        <div class="upcoming-trips-display trips-display">
+          <div class="trip-card"></div>
+          <div class="trip-card"></div>
+          <div class="trip-card"></div>
+        </div>
+      </div>
+      <div class="present-trip-container trips-display-container">
+        <h3 class="present-trip-header trips-display-header">present</h3>
+        <div class="present-trip-display trips-display">
+          <div class="trip-card"></div>
+        </div>
+      </div>
+      <div class="past-trips-container trips-display-container">
+        <h3 class="past-trips-header trips-display-header">past</h3>
+        <div class="past-trips-display trips-display">
+          <div class="trip-card"></div>
+          <div class="trip-card"></div>
+          <div class="trip-card"></div>
+        </div>
+      </div>
+    </div>
+  </main>
   <script src="bundle.js"></script>
-
 </body>
 </html>
