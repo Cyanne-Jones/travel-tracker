@@ -108,5 +108,43 @@ describe('TripsRepository', () => {
         }
       ]
     );
-  })
+  });
+
+  it('Should be able to get a particular user\'s trip data', () => {
+    expect(tripsRepository.getTripsByTravelerId(1)).to.deep.equal(
+      [
+        {
+          "id": 1,
+          "userID": 1,
+          "destinationID": 3,
+          "travelers": 1,
+          "date": "2022/09/16",
+          "duration": 8,
+          "status": "approved",
+          "suggestedActivities": []
+        },
+        {
+          "id": 2,
+          "userID": 1,
+          "destinationID": 2,
+          "travelers": 2,
+          "date": "2020/09/16",
+          "duration": 6,
+          "status": "approved",
+          "suggestedActivities": []
+        },
+        {
+          "id": 3,
+          "userID": 1,
+          "destinationID": 3,
+          "travelers": 1,
+          "date": "2022/06/08",
+          "duration": 7,
+          "status": "approved",
+          "suggestedActivities": []
+        }
+      ]
+    );
+  });
+
 });
