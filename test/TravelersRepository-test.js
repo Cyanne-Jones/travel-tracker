@@ -15,8 +15,12 @@ describe('TravelersRepository', function() {
     expect(TravelersRepository).to.be.a('function');
   });
 
+  it('should be an instance of UserRepository', () => {
+    expect(travelersRepository).to.be.an.instanceof(TravelersRepository)
+  });
+
   it('Should hold travelers\' information', function() {
-    expect(TravelersRepository.travelers).to.equal(travelersSampleData);
+    expect(travelersRepository.travelers).to.equal(travelersSampleData);
   });
   
   

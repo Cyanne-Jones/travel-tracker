@@ -1,6 +1,6 @@
 class TravelersRepository {
-  constructor() {
-
+  constructor(travelersData) {
+    this.travelers = travelersData;
   }
 };
 
