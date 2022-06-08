@@ -1,4 +1,6 @@
-const travelersData = [{
+//5 travelers
+
+const travelersSampleData = [{
   "id": 1,
   "name": "Ham Leadbeater",
   "travelerType": "relaxer",
@@ -20,4 +22,4 @@ const travelersData = [{
   "travelerType": "thrill-seeker",
 }];
 
-export default travelersData;
+export default travelersSampleData;
