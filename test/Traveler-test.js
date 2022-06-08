@@ -1,4 +1,3 @@
-import chai from 'chai';
 import { expect } from 'chai';
 import Traveler from '../src/Traveler.js'
 import travelersSampleData from '../data/travelers.js';
