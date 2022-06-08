@@ -4,7 +4,14 @@ import TravelersRepository from '../src/TravelersRepository.js';
 import travelersSampleData from '../data/travelers.js';
 
 describe('TravelersRepository', function() {
-  it('should return true', function() {
-    expect(true).to.equal(true);
+
+  let travelersRepository;
+
+  beforeEach(() => {
+    travelersRepository = new TravelersRepository(travelersSampleData);
+  })
+
+  it('should be a function', function() {
+    expect(TravelersRepository).to.be.a('function');
   });
 });
