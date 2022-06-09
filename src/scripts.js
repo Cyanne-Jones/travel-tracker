@@ -69,6 +69,7 @@ var todaysDateText = document.querySelector('#todaysDateText');
 var pastTripsDisplay = document.querySelector('.past-trips-display');
 var futureTripsDisplay = document.querySelector('.upcoming-trips-display');
 var presentTripsDisplay = document.querySelector('.present-trip-display');
+var totalCostForYear = document.querySelector('.total-cost-for-year');
 
 //DOM MANIPULATION
 
@@ -112,10 +113,26 @@ function setTravelerTrips(time) {
   }
 };
 
+function getTravelerCostOverYear() {
+  const travelerPastTrips = tripsRepo.getTravelerTripsInTime(travelerId, 'past');
+  const travelerTripsThisYear = travelerPastTrips.filter(trip => dayjs(trip.date).isAfter('2021', 'year'))
+  const travelerCostOverYear = travelerTripsThisYear.reduce((totalCost, currentTrip) => {
+    const destination = destinationRepo.destinations.find(destination => destination.id === currentTrip.destinationID);
+    totalCost += ((destination.estimatedFlightCostPerPerson * currentTrip.travelers) + (destination.estimatedLodgingCostPerDay * currentTrip.duration));
+    return totalCost;
+  }, 0);
+  return (travelerCostOverYear * 1.1).toFixed(2);
+};
+
+function setTravelerCostOverYear() {
+  totalCostForYear.innerText = `$${getTravelerCostOverYear()} spent this year* (not including upcoming trips)`
+}
+
 function showTravelerInfo(traveler) {
   userGreetingText.innerText = `hello, ${traveler.returnFirstName()}!`;
   todaysDateText.innerText = `today's date is ${dayjs(Date.now()).format('ddd MMM D YYYY')}`;
   setTravelerTrips('past');
   setTravelerTrips('future');
   setTravelerTrips('present');
+  setTravelerCostOverYear();
 };
