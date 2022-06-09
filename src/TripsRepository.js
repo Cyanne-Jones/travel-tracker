@@ -15,11 +15,11 @@ class TripsRepository {
     const userTrips = this.getTripsByTravelerId(idNum);
     let userTripsInTime;
     if(time === 'past') {
-      userTripsInTime = userTrips.filter(trip => dayjs(trip.date).isBefore(Date.now()));
+      userTripsInTime = userTrips.filter(trip => dayjs(trip.date).add([trip.duration], 'day').isBefore(Date.now()));
     } else if (time === 'future') {
       userTripsInTime =  userTrips.filter(trip => dayjs(trip.date) > Date.now())
     } else if (time === 'present') {
-      userTripsInTime =  userTrips.find(trip => {
+      userTripsInTime =  userTrips.filter(trip => {
         const durationDate = dayjs(trip.date).add([trip.duration], 'day')
         return (Date.now() <= durationDate) && (Date.now() >= dayjs(trip.date))
       });

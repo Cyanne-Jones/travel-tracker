@@ -105,6 +105,10 @@ width: 300px;
   font-weight: light;
 }
 
+.total-cost-for-year {
+  text-align: center;
+}
+
 .user-trips-card {
   width: 900px;
 }
@@ -119,6 +123,9 @@ width: 300px;
 
 .trips-display {
   display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 5px;
 }
 
 .trips-display-header {
@@ -151,6 +158,10 @@ width: 300px;
 .trip-date-text,
 .trip-people-text {
   margin: 2px;
+}
+
+.trip-destination-text {
+  font-size: 15px;
 }
 
 .trip-date-text,
