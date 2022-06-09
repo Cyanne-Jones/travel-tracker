@@ -68,11 +68,15 @@ var userGreetingText = document.querySelector('#userGreetingText');
 var todaysDateText = document.querySelector('#todaysDateText');
 var pastTripsDisplay = document.querySelector('.past-trips-display');
 var futureTripsDisplay = document.querySelector('.upcoming-trips-display');
+var presentTripsDisplay = document.querySelector('.present-trip-display');
 
 //DOM MANIPULATION
 
 function getTravelerTrips(time) {
   const timeTravelersTrips = tripsRepo.getTravelerTripsInTime(travelerId, time);
+  if (!timeTravelersTrips[0]) {
+    return [`<p>No trips? Why don't you book one!</p>`]
+  } else{
   const formattedTrips = timeTravelersTrips.map(trip => {
     const destination = destinationRepo.getDestinationById(trip.destinationID);
     return `<div class="trip-card">
@@ -88,6 +92,7 @@ function getTravelerTrips(time) {
     </div>`
   });
   return formattedTrips;
+ }
 };
 
 function setTravelerTrips(time) {
@@ -101,7 +106,9 @@ function setTravelerTrips(time) {
       futureTripsDisplay.innerHTML += trip;
     });
   } else if (time === 'present') {
-    
+    userTrips.forEach(trip => {
+      presentTripsDisplay.innerHTML += trip;
+    });
   }
 };
 
@@ -109,5 +116,6 @@ function showTravelerInfo(traveler) {
   userGreetingText.innerText = `hello, ${traveler.returnFirstName()}!`;
   todaysDateText.innerText = `today's date is ${dayjs(Date.now()).format('ddd MMM D YYYY')}`;
   setTravelerTrips('past');
-  setTravelerTrips('future')
+  setTravelerTrips('future');
+  setTravelerTrips('present');
 };
