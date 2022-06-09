@@ -1,3 +1,96 @@
 body {
-  background: radial-gradient(circle, rgba(63,94,251,1) 0%, rgba(252,70,107,1) 100%);
+  background-color: #8EDCE6;
+  background-image: url('../images/Untitled_Artwork\ 2.png');
+  background-size: cover;
+  font-family: 'Josefin Sans', sans-serif;
+  color: #443627
 }
+
+nav {
+  display: flex;
+  justify-content: space-between;
+}
+
+h1 {
+  font-size: 80px;
+  color: #725E54;
+  font-weight: normal;
+  margin: 20px;
+}
+
+main {
+  display: flex;
+  justify-content: space-evenly;
+	align-items: center;
+}
+
+form,
+.plan-trip-card,
+.trip-cost-display {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+	align-items: center;
+}
+
+.main-card {
+  background-color: rgba(213, 220, 249, 0.6);
+  border-radius: 20px;
+  height: 550px;
+  margin: 20px;
+}
+
+.plan-trip-card {
+width: 300px;
+}
+
+.form-element {
+  margin: 3px;
+}
+
+.user-input {
+  width: 200px;
+  border-radius: 10px;
+  height: 25px;
+  border: none;
+}
+
+.total-cost-box {
+  background-color: rgba(114, 94, 84, 0.7);
+  color: #F3DEC8;
+  text-align: center;
+}
+
+.total-cost-in-dollars {
+  font-size: 25px;
+  margin: 10px;
+}
+
+.total-cost-box,
+#submitTripButton {
+  width: 175px;
+  border-radius: 10px;
+}
+
+#submitTripButton {
+  background-color: #A7B0CA;
+  font-family: 'Josefin Sans', sans-serif;
+  border: none;
+  margin-top: 8px;
+  height: 25px;
+}
+
+.submitTripButton-active:hover {
+  background-color: #8EDCE6;
+  cursor: pointer;
+}
+
+.submitTripButton-inactive:hover {
+  cursor: not-allowed
+}
+
+.user-trips-card {
+  width: 900px;
+}
+
+
