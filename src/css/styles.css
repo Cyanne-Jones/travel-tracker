@@ -119,6 +119,7 @@ width: 300px;
 
 .trips-display {
   display: flex;
+  flex-wrap: wrap;
 }
 
 .trips-display-header {
