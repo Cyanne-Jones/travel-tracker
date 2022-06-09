@@ -28,7 +28,6 @@ const destinationPromise = fetchApiData('http://localhost:3001/api/v1/destinatio
 
 Promise.all([travelersPromise, tripsPromise, destinationPromise])
   .then((value) => {
-    //console.log(value);
     setTravelerData(value[0].travelers);
     const correctTraveler = getTravelerData();
     setTraveler(correctTraveler);
@@ -37,7 +36,6 @@ Promise.all([travelersPromise, tripsPromise, destinationPromise])
     showTravelerInfo(traveler);
   })
   .catch(error => {
-    console.log(error)
     return errorMessage.innerText = error.message;
 });
 
@@ -80,13 +78,14 @@ function getTravelerTrips(time) {
   } else{
   const formattedTrips = timeTravelersTrips.map(trip => {
     const destination = destinationRepo.getDestinationById(trip.destinationID);
+    const personPeople = formatNumTravelersGrammar(trip.travelers)
     return `<div class="trip-card">
       <div class="trip-info-container">
         <img class= "trip-photo" src="${destination.image}" alt="${destination.alt}">
         <div class="trip-info-text">
           <p class="trip-destination-text">${destination.destination}</p>
           <p class="trip-date-text">${dayjs(trip.date).format('MMM D YYYY')}</p>
-          <p class="trip-people-text">${trip.travelers} people</p>
+          <p class="trip-people-text">${trip.travelers} ${personPeople}</p>
         </div>
       </div>
      <p class="trip-status">${trip.status}</p>
@@ -94,6 +93,14 @@ function getTravelerTrips(time) {
   });
   return formattedTrips;
  }
+};
+
+function formatNumTravelersGrammar(num) {
+  if (num === 1) {
+    return 'person';
+  } else {
+    return 'people';
+  };
 };
 
 function setTravelerTrips(time) {
@@ -115,6 +122,10 @@ function setTravelerTrips(time) {
 
 function getTravelerCostOverYear() {
   const travelerPastTrips = tripsRepo.getTravelerTripsInTime(travelerId, 'past');
+  const travelerPresentTrip = tripsRepo.getTravelerTripsInTime(travelerId, 'present')
+  if (travelerPresentTrip[0]) {
+    travelerPastTrips.push(travelerPresentTrip[0])
+  };
   const travelerTripsThisYear = travelerPastTrips.filter(trip => dayjs(trip.date).isAfter('2021', 'year'))
   const travelerCostOverYear = travelerTripsThisYear.reduce((totalCost, currentTrip) => {
     const destination = destinationRepo.destinations.find(destination => destination.id === currentTrip.destinationID);
