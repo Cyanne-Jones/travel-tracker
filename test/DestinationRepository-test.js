@@ -69,5 +69,6 @@ describe('Destination Repository', () => {
         "alt": "boats at a dock during the day time"
       }
     );
+    expect(destinationRepository.getDestinationById(485)).to.equal(undefined);
   });
 });
