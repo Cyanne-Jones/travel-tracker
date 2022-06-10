@@ -3,7 +3,7 @@ import TravelersRepository from './TravelersRepository';
 import DestinationRepository from './DestinationRepository';
 import TripsRepository from './TripsRepository';
 import Traveler from './Traveler';
-import {fetchApiData} from './apiCalls.js';
+import {fetchApiData, postNewTrip} from './apiCalls.js';
 import dayjs from 'dayjs';
 dayjs().format();
 
@@ -68,6 +68,7 @@ var pastTripsDisplay = document.querySelector('.past-trips-display');
 var futureTripsDisplay = document.querySelector('.upcoming-trips-display');
 var presentTripsDisplay = document.querySelector('.present-trip-display');
 var totalCostForYear = document.querySelector('.total-cost-for-year');
+var form = document.querySelector('.plan-trip-form');
 
 //DOM MANIPULATION
 
@@ -147,3 +148,26 @@ function showTravelerInfo(traveler) {
   setTravelerTrips('present');
   setTravelerCostOverYear();
 };
+
+form.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const formData = new FormData(e.target);
+  const newTrip = {
+    id: tripsRepo.trips.length + 1,
+    userID: travelerId,
+    destinationID: (destinationRepo.destinations.find(destination => destination.destination === formData.get('destination-datalist'))).id,
+    travelers: formData.get('number-people-input'),
+    date: formData.get('departure-date-input'),
+    duration: formData.get('trip-length-input'),
+    status: 'pending',
+    suggestedActivities: []
+  };
+  postNewTrip(newTrip);
+  e.target.reset();
+});
+
+function addTripToPage(trip) {
+  console.log(tripsRepo.trips);
+};
+
+export { errorMessage, addTripToPage };
