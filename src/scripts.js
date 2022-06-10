@@ -18,7 +18,7 @@ const getRandomID = () => {
   return Math.floor(Math.random() * 49) + 1;
 };
 
-const travelerId = getRandomID();
+let travelerId = getRandomID();
 
 //FETCH CALLS
 
@@ -73,9 +73,7 @@ var form = document.querySelector('.plan-trip-form');
 //DOM MANIPULATION
 
 function getTravelerTrips(time) {
-  console.log('inside getTravelerTrips ', tripsRepo.trips.length);
   const timeTravelersTrips = tripsRepo.getTravelerTripsInTime(travelerId, time);
-  console.log('timeTravelersTrips', time, timeTravelersTrips);
   if (!timeTravelersTrips[0]) {
     return [`<p>No trips? Why don't you book one!</p>`]
   } else{
@@ -173,12 +171,32 @@ function getFormData(e) {
   function showNewTrip(e) {
     const newTrip = getFormData(e);
     const postPromise = postNewTrip(newTrip);
-    const newFetchPromise = fetchApiData('http://localhost:3001/api/v1/trips')
+    const newFetchPromise = fetchApiData('http://localhost:3001/api/v1/trips');
     Promise.all([postPromise, newFetchPromise]).then(value => {
       tripsRepo = new TripsRepository(value[1].trips);
-      console.log('inside post request ', tripsRepo.trips.length);
-      showTravelerInfo(traveler);
+      showPostedTrip(value[0].newTrip)
     });
+  }
+
+  function formatPostedTrip (trip) {
+      const destination = destinationRepo.getDestinationById(trip.destinationID);
+      const personPeople = formatNumTravelersGrammar(trip.travelers)
+      return `<div class="trip-card">
+        <div class="trip-info-container">
+          <img class= "trip-photo" src="${destination.image}" alt="${destination.alt}">
+          <div class="trip-info-text">
+            <p class="trip-destination-text">${destination.destination}</p>
+            <p class="trip-date-text">${dayjs(trip.date).format('MMM D YYYY')}</p>
+            <p class="trip-people-text">${trip.travelers} ${personPeople}</p>
+          </div>
+        </div>
+       <p class="trip-status">${trip.status}</p>
+      </div>`
+    };
+
+  function showPostedTrip(trip) {
+    const formattedTrip = formatPostedTrip(trip);
+    futureTripsDisplay.innerHTML += formattedTrip;
   }
 
 
