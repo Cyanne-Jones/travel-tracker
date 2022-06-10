@@ -197,7 +197,7 @@ describe('TripsRepository', () => {
   });
 
   it('Should get traveler\'s present trips', () => {
-    expect(tripsRepository.getTravelerTripsInTime(1, 'present')).to.deep.equal(  {
+    expect(tripsRepository.getTravelerTripsInTime(1, 'present')).to.deep.equal([{
       "id": 10,
       "userID": 1,
       "destinationID": 10,
@@ -206,7 +206,7 @@ describe('TripsRepository', () => {
       "duration": 40,
       "status": "approved",
       "suggestedActivities": []
-    });
+    }]);
   });
 
 });
