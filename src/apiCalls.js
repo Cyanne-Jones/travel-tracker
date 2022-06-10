@@ -1,4 +1,4 @@
-import { errorMessage, addTripToPage } from './scripts.js';
+import { errorMessage } from './scripts.js';
 
 function fetchApiData(url) {
   return fetch(url)
@@ -6,17 +6,12 @@ function fetchApiData(url) {
 };
 
 function postNewTrip(newTrip) {
-  fetch('http://localhost:3001/api/v1/trips', {
+  return fetch('http://localhost:3001/api/v1/trips', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(newTrip)
   })
-  .then(response => {
-    checkForError(response)
-  })
-  .then(trip => {
-    console.log(trip);
-    return addTripToPage(trip)})
+  .then(promise => promise.json())
   .catch(error => {
     console.log('ERROR', error)
     if (error.message === 'Failed to fetch') {
