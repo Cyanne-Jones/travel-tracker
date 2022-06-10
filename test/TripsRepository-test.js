@@ -196,6 +196,7 @@ describe('TripsRepository', () => {
         "suggestedActivities": []
       }
     ]);
+    expect(tripsRepository.getTravelerTripsInTime(754, 'future')).to.deep.equal([]);
   });
 
   it('Should get traveler\'s present trips', () => {
@@ -209,6 +210,6 @@ describe('TripsRepository', () => {
       "status": "approved",
       "suggestedActivities": []
     }]);
+    expect(tripsRepository.getTravelerTripsInTime(43825, 'present')).to.deep.equal([]);
   });
-
 });
