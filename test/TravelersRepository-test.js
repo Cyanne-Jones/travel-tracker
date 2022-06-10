@@ -16,7 +16,7 @@ describe('TravelersRepository', function() {
   });
 
   it('should be an instance of TravelersRepository', () => {
-    expect(travelersRepository).to.be.an.instanceof(TravelersRepository)
+    expect(travelersRepository).to.be.an.instanceof(TravelersRepository);
   });
 
   it('Should hold travelers\' information', function() {
@@ -24,13 +24,14 @@ describe('TravelersRepository', function() {
   });
   
   it('Should return a user based on their id number', function() {
-    expect(travelersRepository.getTravelerByIdNum(3)).to.deep. equal(
+    expect(travelersRepository.getTravelerByIdNum(3)).to.deep.equal(
       {
         "id": 3,
         "name": "Sibby Dawidowitsch",
         "travelerType": "shopper",
       }
     );
+    expect(travelersRepository.getTravelerByIdNum(675)).to.equal(undefined);
   });
 
 });

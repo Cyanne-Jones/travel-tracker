@@ -164,6 +164,7 @@ describe('TripsRepository', () => {
           "suggestedActivities": []
         }
       ]);
+      expect(tripsRepository.getTripsByTravelerId(4375)).to.deep.equal([]);
   });
 
   it('Should be able to return a traveler\'s past trips', () => {
@@ -179,6 +180,7 @@ describe('TripsRepository', () => {
         "suggestedActivities": []
       }]
     );
+    expect(tripsRepository.getTravelerTripsInTime(456, 'past')).to.deep.equal([])
   });
 
   it('Should be able to return a traveler\'s future trips', () => {
@@ -194,10 +196,11 @@ describe('TripsRepository', () => {
         "suggestedActivities": []
       }
     ]);
+    expect(tripsRepository.getTravelerTripsInTime(754, 'future')).to.deep.equal([]);
   });
 
   it('Should get traveler\'s present trips', () => {
-    expect(tripsRepository.getTravelerTripsInTime(1, 'present')).to.deep.equal(  {
+    expect(tripsRepository.getTravelerTripsInTime(1, 'present')).to.deep.equal([{
       "id": 10,
       "userID": 1,
       "destinationID": 10,
@@ -206,7 +209,7 @@ describe('TripsRepository', () => {
       "duration": 40,
       "status": "approved",
       "suggestedActivities": []
-    });
+    }]);
+    expect(tripsRepository.getTravelerTripsInTime(43825, 'present')).to.deep.equal([]);
   });
-
 });
