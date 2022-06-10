@@ -8,14 +8,14 @@
   <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,400;1,300&display=swap" rel="stylesheet">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TravelBug</title>
+  <title>travelbug</title>
 </head>
 <body>
   <nav>
     <h1>travelbug</h1>
     <div class="greeting">
       <h2 id="userGreetingText"></h2>
-      <h3 id="todaysDateText">today's date is 2022/06/07</h3>
+      <h3 id="todaysDateText"></h3>
     </div>
   </nav>
   <p class="error-message"></p>
@@ -24,7 +24,7 @@
       <h2 class="plan-header card-header">plan a trip!</h2>
       <form class="plan-trip-form">
         <label class ="form-element" for="destination-datalist">destination</label>
-        <input class ="form-element user-input" type="text" list="destinations" id="destination-datalist">
+        <input class ="form-element user-input" type="text" list="destinations" id="destination-datalist" name="destination-datalist" required>
         <datalist id="destinations">
           <option value="Lima, Peru"></option>
           <option value="Stockholm, Sweden"></option>
@@ -78,12 +78,12 @@
           <option value="Hobart, Tasmania"></option>
         </datalist>
         <label class ="form-element" for="trip-length-input">length of trip? (# days)</label>
-        <input class ="form-element user-input" id="trip-length-input" type="number" step="1">
+        <input class ="form-element user-input" id="trip-length-input" name="trip-length-input" type="number" step="1" required>
         <label class ="form-element" for="number-people-input">how many people?</label>
-        <input class ="form-element user-input" id="number-people-input" type="number" step="1">
+        <input class ="form-element user-input" id="number-people-input" name="number-people-input" type="number" step="1" required>
         <label class ="form-element" for="departure-date-input">departure date</label>
-        <input class ="form-element user-input" id="departure-date-input" type="text" placeholder="yyyy/mm/dd">
-        <button class ="form-element submitTripButton-inactive" id="submitTripButton">submit</button>
+        <input class ="form-element user-input" id="departure-date-input" name="departure-date-input" type="text" placeholder="yyyy/mm/dd" required>
+        <input  type="submit" class ="form-element submitTripButton-inactive" id="submitTripButton" value="submit">
       </form>
       <div class="trip-cost-display">
         <h3 class="total-cost-header">total cost of planned trip</h3>
