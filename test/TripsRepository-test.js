@@ -164,6 +164,7 @@ describe('TripsRepository', () => {
           "suggestedActivities": []
         }
       ]);
+      expect(tripsRepository.getTripsByTravelerId(4375)).to.deep.equal([]);
   });
 
   it('Should be able to return a traveler\'s past trips', () => {
@@ -179,6 +180,7 @@ describe('TripsRepository', () => {
         "suggestedActivities": []
       }]
     );
+    expect(tripsRepository.getTravelerTripsInTime(456, 'past')).to.deep.equal([])
   });
 
   it('Should be able to return a traveler\'s future trips', () => {
