@@ -3,7 +3,7 @@ import TravelersRepository from './TravelersRepository';
 import DestinationRepository from './DestinationRepository';
 import TripsRepository from './TripsRepository';
 import Traveler from './Traveler';
-import {fetchApiData} from './apiCalls.js';
+import {fetchApiData, postNewTrip} from './apiCalls.js';
 import dayjs from 'dayjs';
 dayjs().format();
 
@@ -18,7 +18,7 @@ const getRandomID = () => {
   return Math.floor(Math.random() * 49) + 1;
 };
 
-const travelerId = getRandomID();
+let travelerId = getRandomID();
 
 //FETCH CALLS
 
@@ -68,6 +68,7 @@ var pastTripsDisplay = document.querySelector('.past-trips-display');
 var futureTripsDisplay = document.querySelector('.upcoming-trips-display');
 var presentTripsDisplay = document.querySelector('.present-trip-display');
 var totalCostForYear = document.querySelector('.total-cost-for-year');
+var form = document.querySelector('.plan-trip-form');
 
 //DOM MANIPULATION
 
@@ -147,3 +148,62 @@ function showTravelerInfo(traveler) {
   setTravelerTrips('present');
   setTravelerCostOverYear();
 };
+
+form.addEventListener('submit', showNewTrip)
+
+function getFormData(e) {
+  e.preventDefault();
+  const formData = new FormData(e.target);
+  const newTrip = {
+    id: tripsRepo.trips.length + 1,
+    userID: travelerId,
+    destinationID: (destinationRepo.destinations.find(destination => destination.destination === formData.get('destination-datalist'))).id,
+    travelers: formData.get('number-people-input'),
+    date: formData.get('departure-date-input'),
+    duration: formData.get('trip-length-input'),
+    status: 'pending',
+    suggestedActivities: []
+  };
+  e.target.reset();
+  resetTripsDisplay();
+  return newTrip
+}
+  function showNewTrip(e) {
+    const newTrip = getFormData(e);
+    const postPromise = postNewTrip(newTrip);
+    const newFetchPromise = fetchApiData('http://localhost:3001/api/v1/trips');
+    Promise.all([postPromise, newFetchPromise]).then(value => {
+      tripsRepo = new TripsRepository(value[1].trips);
+      showPostedTrip(value[0].newTrip)
+    });
+  }
+
+  function formatPostedTrip (trip) {
+      const destination = destinationRepo.getDestinationById(trip.destinationID);
+      const personPeople = formatNumTravelersGrammar(trip.travelers)
+      return `<div class="trip-card">
+        <div class="trip-info-container">
+          <img class= "trip-photo" src="${destination.image}" alt="${destination.alt}">
+          <div class="trip-info-text">
+            <p class="trip-destination-text">${destination.destination}</p>
+            <p class="trip-date-text">${dayjs(trip.date).format('MMM D YYYY')}</p>
+            <p class="trip-people-text">${trip.travelers} ${personPeople}</p>
+          </div>
+        </div>
+       <p class="trip-status">${trip.status}</p>
+      </div>`
+    };
+
+  function showPostedTrip(trip) {
+    const formattedTrip = formatPostedTrip(trip);
+    futureTripsDisplay.innerHTML += formattedTrip;
+  }
+
+
+function resetTripsDisplay() {
+  pastTripsDisplay.innerHTML = '';
+  futureTripsDisplay.innerHTML = '';
+  presentTripsDisplay.innerHTML = '';
+}
+
+export { errorMessage };
