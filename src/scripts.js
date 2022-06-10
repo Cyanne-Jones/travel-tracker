@@ -73,7 +73,9 @@ var form = document.querySelector('.plan-trip-form');
 //DOM MANIPULATION
 
 function getTravelerTrips(time) {
+  console.log('inside getTravelerTrips ', tripsRepo.trips.length);
   const timeTravelersTrips = tripsRepo.getTravelerTripsInTime(travelerId, time);
+  console.log('timeTravelersTrips', time, timeTravelersTrips);
   if (!timeTravelersTrips[0]) {
     return [`<p>No trips? Why don't you book one!</p>`]
   } else{
@@ -149,7 +151,9 @@ function showTravelerInfo(traveler) {
   setTravelerCostOverYear();
 };
 
-form.addEventListener('submit', (e) => {
+form.addEventListener('submit', showNewTrip)
+
+function getFormData(e) {
   e.preventDefault();
   const formData = new FormData(e.target);
   const newTrip = {
@@ -162,12 +166,26 @@ form.addEventListener('submit', (e) => {
     status: 'pending',
     suggestedActivities: []
   };
-  postNewTrip(newTrip);
   e.target.reset();
-});
+  resetTripsDisplay();
+  return newTrip
+}
+  function showNewTrip(e) {
+    const newTrip = getFormData(e);
+    const postPromise = postNewTrip(newTrip);
+    const newFetchPromise = fetchApiData('http://localhost:3001/api/v1/trips')
+    Promise.all([postPromise, newFetchPromise]).then(value => {
+      tripsRepo = new TripsRepository(value[1].trips);
+      console.log('inside post request ', tripsRepo.trips.length);
+      showTravelerInfo(traveler);
+    });
+  }
 
-function addTripToPage(trip) {
-  console.log(tripsRepo.trips);
-};
 
-export { errorMessage, addTripToPage };
+function resetTripsDisplay() {
+  pastTripsDisplay.innerHTML = '';
+  futureTripsDisplay.innerHTML = '';
+  presentTripsDisplay.innerHTML = '';
+}
+
+export { errorMessage };
