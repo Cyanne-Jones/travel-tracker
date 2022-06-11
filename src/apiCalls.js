@@ -16,7 +16,6 @@ function postNewTrip(newTrip) {
     return checkForError(promise)
   })
   .catch(error => {
-    console.log('ERROR', error)
     if (error.message === 'Failed to fetch') {
       errorMessage.innerText = 'Failed to fetch new data, pleasae start server.';
     } else {
