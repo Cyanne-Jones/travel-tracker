@@ -226,6 +226,7 @@ function formatPostedTrip (trip) {
 function showPostedTrip(trip) {
   const formattedTrip = formatPostedTrip(trip);
   futureTripsDisplay.innerHTML += formattedTrip;
+  totalCostUserTrip.innerText = '';
   totalCostUserTrip.innerText = calculateInputtedTripCost(trip);
 };
 
