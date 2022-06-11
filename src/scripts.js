@@ -166,7 +166,7 @@ function getFormData(e) {
       suggestedActivities: []
     };
     e.target.reset();
-    resetTripsDisplay();
+    futureTripsDisplay.innerHTML = '';;
     return newTrip
   } else {
     errorMessage.innerText = 'please input valid destination.'
@@ -174,7 +174,6 @@ function getFormData(e) {
 };
 
 function checkDestinationInputVaidity(destinationParam) {
-  console.log(destinationParam);
   const tripNames = destinationRepo.destinations.map(destination => destination.destination);
   if(tripNames.includes(destinationParam)) {
     return true;
@@ -210,13 +209,6 @@ function formatPostedTrip (trip) {
 function showPostedTrip(trip) {
   const formattedTrip = formatPostedTrip(trip);
   futureTripsDisplay.innerHTML += formattedTrip;
-}
-
-
-function resetTripsDisplay() {
-  pastTripsDisplay.innerHTML = '';
-  futureTripsDisplay.innerHTML = '';
-  presentTripsDisplay.innerHTML = '';
-}
+};
 
 export { errorMessage };
