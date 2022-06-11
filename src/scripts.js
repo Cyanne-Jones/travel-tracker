@@ -9,38 +9,24 @@ dayjs().format();
 
 //GLOBAL VARIABLES
 
-var travelersRepo;
 var destinationRepo;
 var tripsRepo;
 var traveler;
 let travelerId;
 
-const getRandomID = () => {
-  return Math.floor(Math.random() * 49) + 1;
-};
-
 //FETCH CALLS
 
-const travelersPromise = fetchApiData('http://localhost:3001/api/v1/travelers');
 const tripsPromise = fetchApiData('http://localhost:3001/api/v1/trips');
 const destinationPromise = fetchApiData('http://localhost:3001/api/v1/destinations');
 
-Promise.all([travelersPromise, tripsPromise, destinationPromise])
+Promise.all([tripsPromise, destinationPromise])
   .then((value) => {
-    //setTravelerData(value[0].travelers);
-    //const correctTraveler = getTravelerData();
-    //setTraveler(correctTraveler);
-    setTripsData(value[1].trips);
-    setDestinationData(value[2].destinations);
-    //showTravelerInfo(traveler);
+    setTripsData(value[0].trips);
+    setDestinationData(value[1].destinations);
   })
   .catch(error => {
     return errorMessage.innerText = error.message;
 });
-
-function setTravelerData(data) {
-  travelersRepo = new TravelersRepository(data);
-};
 
 function setTripsData(data) {
   tripsRepo = new TripsRepository(data);
@@ -48,11 +34,6 @@ function setTripsData(data) {
 
 function setDestinationData(data) {
   destinationRepo = new DestinationRepository(data);
-};
-
-function getTravelerData() {
-  var correctTraveler = travelersRepo.getTravelerByIdNum(travelerId);
-  return correctTraveler;
 };
 
 function setTraveler(user) {
@@ -77,7 +58,6 @@ loginForm.addEventListener('submit', loginTraveler);
 
 function getTravelerTrips(time) {
   const timeTravelersTrips = tripsRepo.getTravelerTripsInTime(travelerId, time);
-  console.log(timeTravelersTrips);
   if (!timeTravelersTrips[0]) {
     return [`No trips? Why don't you book one!`]
   } else{
@@ -238,16 +218,14 @@ function calculateInputtedTripCost(trip) {
 
 function loginTraveler(e) {
   e.preventDefault();
-  getLoginFormData(e)
+  getLoginFormData(e);
 }
 
 function getLoginFormData(e) {
-  e.preventDefault();
   const loginFormData = new FormData(e.target);
   if (checkUserNameValidity(loginFormData.get('username-input')) && checkPasswordValidity(loginFormData.get('password-input'))) {
     fetchApiData(`http://localhost:3001/api/v1/travelers/${checkUserNameValidity(loginFormData.get('username-input'))}`)
     .then(response => {
-      e.preventDefault();
       setTraveler(response);
       travelerId = response.id;
       showTravelerInfo(traveler);
@@ -255,11 +233,10 @@ function getLoginFormData(e) {
       loginForm.classList.add('hidden');
     })
     .catch(error => {
-      console.log('error ',error)
       errorMessage.innerText = error.message;
     });
   } else {
-    errorMessage.innerText = `invalid login information, please try again.`
+    errorMessage.innerText = `invalid login information, please try again.`;
   }
 };
 
