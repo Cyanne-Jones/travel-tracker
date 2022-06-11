@@ -69,7 +69,7 @@ var futureTripsDisplay = document.querySelector('.upcoming-trips-display');
 var presentTripsDisplay = document.querySelector('.present-trip-display');
 var totalCostForYear = document.querySelector('.total-cost-for-year');
 var form = document.querySelector('.plan-trip-form');
-
+var totalCostUserTrip = document.querySelector('.total-cost-in-dollars');
 form.addEventListener('submit', fetchNewTrip);
 
 //DOM MANIPULATION
@@ -132,7 +132,7 @@ function getTravelerCostOverYear() {
   const travelerTripsThisYear = travelerPastTrips.filter(trip => dayjs(trip.date).isAfter('2021', 'year'));
   const travelerCostOverYear = travelerTripsThisYear.reduce((totalCost, currentTrip) => {
     const destination = destinationRepo.destinations.find(destination => destination.id === currentTrip.destinationID);
-    totalCost += ((destination.estimatedFlightCostPerPerson * currentTrip.travelers) + (destination.estimatedLodgingCostPerDay * currentTrip.duration));
+    totalCost += ((destination.estimatedFlightCostPerPerson * currentTrip.travelers) + (destination.estimatedLodgingCostPerDay * currentTrip.duration * currentTrip.travelers));
     return totalCost;
   }, 0);
   return (travelerCostOverYear * 1.1).toFixed(2);
@@ -202,6 +202,7 @@ function fetchNewTrip(e) {
   Promise.all([postPromise, newFetchPromise]).then(value => {
     tripsRepo = new TripsRepository(value[1].trips);
     showPostedTrip(value[0].newTrip);
+    totalCostUserTrip.innerText = calculateInputtedTripCost(value[0].newTrip);
   });
 };
 
@@ -224,6 +225,13 @@ function formatPostedTrip (trip) {
 function showPostedTrip(trip) {
   const formattedTrip = formatPostedTrip(trip);
   futureTripsDisplay.innerHTML += formattedTrip;
+  totalCostUserTrip.innerText = calculateInputtedTripCost(trip);
+};
+
+function calculateInputtedTripCost(trip) {
+  const destination = destinationRepo.getDestinationById(trip.destinationID)
+  const tripCost = ((destination.estimatedFlightCostPerPerson * trip.travelers) + (destination.estimatedLodgingCostPerDay * trip.duration * trip.travelers))
+  return `$${(tripCost * 1.1).toFixed(2)}*`;
 };
 
 export { errorMessage };
