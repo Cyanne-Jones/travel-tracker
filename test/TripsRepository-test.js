@@ -6,7 +6,7 @@ describe('TripsRepository', () => {
   let tripsRepository;
 
   beforeEach(() => {
-    tripsRepository = new TripsRepository(tripsSampleData)
+    tripsRepository = new TripsRepository(tripsSampleData);
   });
 
   it('Should be a function', () => {
@@ -180,7 +180,7 @@ describe('TripsRepository', () => {
         "suggestedActivities": []
       }]
     );
-    expect(tripsRepository.getTravelerTripsInTime(456, 'past')).to.deep.equal([])
+    expect(tripsRepository.getTravelerTripsInTime(456, 'past')).to.deep.equal([]);
   });
 
   it('Should be able to return a traveler\'s future trips', () => {
