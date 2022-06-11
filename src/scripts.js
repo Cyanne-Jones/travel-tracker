@@ -170,8 +170,6 @@ function getFormData(e) {
       futureTripsDisplay.innerHTML = '';
     }
     return newTrip;
-  } else {
-    errorMessage.innerText = 'please input valid input.';
   };
 };
 
