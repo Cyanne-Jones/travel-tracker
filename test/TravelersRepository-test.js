@@ -9,7 +9,7 @@ describe('TravelersRepository', function() {
 
   beforeEach(() => {
     travelersRepository = new TravelersRepository(travelersSampleData);
-  })
+  });
 
   it('Should be a function', function() {
     expect(TravelersRepository).to.be.a('function');
@@ -33,5 +33,4 @@ describe('TravelersRepository', function() {
     );
     expect(travelersRepository.getTravelerByIdNum(675)).to.equal(undefined);
   });
-
 });
