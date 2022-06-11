@@ -11,7 +11,7 @@ describe('Destination Repository', () => {
   });
 
   it('Should be a function', () => {
-    expect(DestinationRepository).to.be.a('function')
+    expect(DestinationRepository).to.be.a('function');
   });
 
   it('Should hold an array of destinations', () => {
