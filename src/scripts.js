@@ -70,7 +70,7 @@ var presentTripsDisplay = document.querySelector('.present-trip-display');
 var totalCostForYear = document.querySelector('.total-cost-for-year');
 var form = document.querySelector('.plan-trip-form');
 
-form.addEventListener('submit', showNewTrip);
+form.addEventListener('submit', fetchNewTrip);
 
 //DOM MANIPULATION
 
@@ -166,12 +166,16 @@ function getFormData(e) {
       suggestedActivities: []
     };
     e.target.reset();
-    if (futureTripsDisplay.innerText === `No trips? Why don't you book one!`) {
-      futureTripsDisplay.innerHTML = '';
-    }
+    checkTripsDisplay()
     return newTrip;
   };
 };
+
+function checkTripsDisplay() {
+  if (futureTripsDisplay.innerText === `No trips? Why don't you book one!`) {
+    futureTripsDisplay.innerHTML = '';
+  }
+}
 
 function checkDestinationInputVaidity(destinationParam) {
   const tripNames = destinationRepo.destinations.map(destination => destination.destination);
@@ -191,7 +195,7 @@ function checkDateInputValidity(dateParam) {
   };
 };
 
-function showNewTrip(e) {
+function fetchNewTrip(e) {
   const newTrip = getFormData(e);
   const postPromise = postNewTrip(newTrip);
   const newFetchPromise = fetchApiData('http://localhost:3001/api/v1/trips');
