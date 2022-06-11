@@ -7,11 +7,11 @@ describe('Traveler', () => {
   let traveler;
 
   beforeEach(() => {
-    traveler = new Traveler(travelersSampleData[0])
+    traveler = new Traveler(travelersSampleData[0]);
   });
 
   it('Should be a function', () => {
-    expect(Traveler).to.be.a('function')
+    expect(Traveler).to.be.a('function');
   });
 
   it('Should hold a traveler\'s name', () => {
