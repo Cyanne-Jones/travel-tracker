@@ -92,7 +92,7 @@ function getTravelerTrips(time) {
         </div>
       </div>
      <p class="trip-status">${trip.status}</p>
-    </div>`
+    </div>`;
   });
   return formattedTrips;
  }
@@ -106,7 +106,7 @@ function formatNumTravelersGrammar(num) {
   };
 };
 
-function setTravelerTrips(time) {
+function showTravelerTrips(time) {
   const userTrips = getTravelerTrips(time);
   if(time === 'past') {
     userTrips.forEach(trip => {
@@ -131,24 +131,24 @@ function getTravelerCostOverYear() {
   };
   const travelerTripsThisYear = travelerPastTrips.filter(trip => dayjs(trip.date).isAfter('2021', 'year'));
   const travelerCostOverYear = travelerTripsThisYear.reduce((totalCost, currentTrip) => {
-    const destination = destinationRepo.destinations.find(destination => destination.id === currentTrip.destinationID);
+    const destination = destinationRepo.getDestinationById(currentTrip.destinationID);
     totalCost += ((destination.estimatedFlightCostPerPerson * currentTrip.travelers) + (destination.estimatedLodgingCostPerDay * currentTrip.duration * currentTrip.travelers));
     return totalCost;
   }, 0);
   return (travelerCostOverYear * 1.1).toFixed(2);
 };
 
-function setTravelerCostOverYear() {
+function showTravelerCostOverYear() {
   totalCostForYear.innerText = `$${getTravelerCostOverYear()} spent this year* (not including upcoming trips)`;
 };
 
 function showTravelerInfo(traveler) {
   userGreetingText.innerText = `hello, ${traveler.returnFirstName()}!`;
   todaysDateText.innerText = `today's date is ${dayjs(Date.now()).format('ddd MMM D YYYY')}`;
-  setTravelerTrips('past');
-  setTravelerTrips('future');
-  setTravelerTrips('present');
-  setTravelerCostOverYear();
+  showTravelerTrips('past');
+  showTravelerTrips('future');
+  showTravelerTrips('present');
+  showTravelerCostOverYear();
 };
 
 function getFormData(e) {
@@ -166,7 +166,7 @@ function getFormData(e) {
       suggestedActivities: []
     };
     e.target.reset();
-    checkTripsDisplay()
+    checkTripsDisplay();
     return newTrip;
   };
 };
@@ -174,8 +174,8 @@ function getFormData(e) {
 function checkTripsDisplay() {
   if (futureTripsDisplay.innerText === `No trips? Why don't you book one!`) {
     futureTripsDisplay.innerHTML = '';
-  }
-}
+  };
+};
 
 function checkDestinationInputVaidity(destinationParam) {
   const tripNames = destinationRepo.destinations.map(destination => destination.destination);
