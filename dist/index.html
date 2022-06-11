@@ -21,11 +21,11 @@
   </nav>
   <p class="error-message"></p>
   <form class="login-form" >
-    <label for="username-input">username</label>
-    <input type="text" class="username-input login-page-input" name="username-input" placeholder="username" id="username-input" required>
-    <label for="password-input">password</label>
-    <input type="password" class="password-input login-page-input" name="password-input" placeholder="password" id="password-input" required>
-    <input  type="submit" class ="login-page-input" id="loginButton" value="login">
+    <label for="username-input" class ="form-element">username</label>
+    <input type="text" class="username-input login-page-input user-input form-element" name="username-input" placeholder="username" id="username-input" required>
+    <label for="password-input" class ="form-element">password</label>
+    <input type="password" class="password-input login-page-input user-input form-element" name="password-input" placeholder="password" id="password-input" required>
+    <input  type="submit" class ="login-page-input user-input form-element" id="loginButton" value="login">
   </form>
   <main class="hidden">
     <div class="plan-trip-card main-card">
@@ -96,7 +96,7 @@
       <div class="trip-cost-display">
         <h3 class="total-cost-header">total cost of planned trip</h3>
         <div class="total-cost-box">
-          <p class="total-cost-in-dollars"></p>
+          <p class="total-cost-in-dollars">✈</p>
         </div>
         <p class="disclaimer">*prices include a 10% travel agent fee</p>
       </div>
