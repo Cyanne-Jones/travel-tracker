@@ -70,12 +70,14 @@ var presentTripsDisplay = document.querySelector('.present-trip-display');
 var totalCostForYear = document.querySelector('.total-cost-for-year');
 var form = document.querySelector('.plan-trip-form');
 
+form.addEventListener('submit', showNewTrip);
+
 //DOM MANIPULATION
 
 function getTravelerTrips(time) {
   const timeTravelersTrips = tripsRepo.getTravelerTripsInTime(travelerId, time);
   if (!timeTravelersTrips[0]) {
-    return [`<p>No trips? Why don't you book one!</p>`]
+    return [`No trips? Why don't you book one!`]
   } else{
   const formattedTrips = timeTravelersTrips.map(trip => {
     const destination = destinationRepo.getDestinationById(trip.destinationID);
@@ -118,16 +120,16 @@ function setTravelerTrips(time) {
     userTrips.forEach(trip => {
       presentTripsDisplay.innerHTML += trip;
     });
-  }
+  };
 };
 
 function getTravelerCostOverYear() {
   const travelerPastTrips = tripsRepo.getTravelerTripsInTime(travelerId, 'past');
-  const travelerPresentTrip = tripsRepo.getTravelerTripsInTime(travelerId, 'present')
+  const travelerPresentTrip = tripsRepo.getTravelerTripsInTime(travelerId, 'present');
   if (travelerPresentTrip[0]) {
-    travelerPastTrips.push(travelerPresentTrip[0])
+    travelerPastTrips.push(travelerPresentTrip[0]);
   };
-  const travelerTripsThisYear = travelerPastTrips.filter(trip => dayjs(trip.date).isAfter('2021', 'year'))
+  const travelerTripsThisYear = travelerPastTrips.filter(trip => dayjs(trip.date).isAfter('2021', 'year'));
   const travelerCostOverYear = travelerTripsThisYear.reduce((totalCost, currentTrip) => {
     const destination = destinationRepo.destinations.find(destination => destination.id === currentTrip.destinationID);
     totalCost += ((destination.estimatedFlightCostPerPerson * currentTrip.travelers) + (destination.estimatedLodgingCostPerDay * currentTrip.duration));
@@ -137,8 +139,8 @@ function getTravelerCostOverYear() {
 };
 
 function setTravelerCostOverYear() {
-  totalCostForYear.innerText = `$${getTravelerCostOverYear()} spent this year* (not including upcoming trips)`
-}
+  totalCostForYear.innerText = `$${getTravelerCostOverYear()} spent this year* (not including upcoming trips)`;
+};
 
 function showTravelerInfo(traveler) {
   userGreetingText.innerText = `hello, ${traveler.returnFirstName()}!`;
@@ -149,61 +151,75 @@ function showTravelerInfo(traveler) {
   setTravelerCostOverYear();
 };
 
-form.addEventListener('submit', showNewTrip)
-
 function getFormData(e) {
   e.preventDefault();
   const formData = new FormData(e.target);
-  const newTrip = {
-    id: tripsRepo.trips.length + 1,
-    userID: travelerId,
-    destinationID: (destinationRepo.destinations.find(destination => destination.destination === formData.get('destination-datalist'))).id,
-    travelers: formData.get('number-people-input'),
-    date: formData.get('departure-date-input'),
-    duration: formData.get('trip-length-input'),
-    status: 'pending',
-    suggestedActivities: []
-  };
-  e.target.reset();
-  resetTripsDisplay();
-  return newTrip
-}
-  function showNewTrip(e) {
-    const newTrip = getFormData(e);
-    const postPromise = postNewTrip(newTrip);
-    const newFetchPromise = fetchApiData('http://localhost:3001/api/v1/trips');
-    Promise.all([postPromise, newFetchPromise]).then(value => {
-      tripsRepo = new TripsRepository(value[1].trips);
-      showPostedTrip(value[0].newTrip)
-    });
-  }
-
-  function formatPostedTrip (trip) {
-      const destination = destinationRepo.getDestinationById(trip.destinationID);
-      const personPeople = formatNumTravelersGrammar(trip.travelers)
-      return `<div class="trip-card">
-        <div class="trip-info-container">
-          <img class= "trip-photo" src="${destination.image}" alt="${destination.alt}">
-          <div class="trip-info-text">
-            <p class="trip-destination-text">${destination.destination}</p>
-            <p class="trip-date-text">${dayjs(trip.date).format('MMM D YYYY')}</p>
-            <p class="trip-people-text">${trip.travelers} ${personPeople}</p>
-          </div>
-        </div>
-       <p class="trip-status">${trip.status}</p>
-      </div>`
+  if (checkDestinationInputVaidity(formData.get('destination-datalist')) && checkDateInputValidity(formData.get('departure-date-input'))) {
+    const newTrip = {
+      id: tripsRepo.trips.length + 1,
+      userID: travelerId,
+      destinationID: (destinationRepo.destinations.find(destination => destination.destination === formData.get('destination-datalist'))).id,
+      travelers: formData.get('number-people-input'),
+      date: formData.get('departure-date-input'),
+      duration: formData.get('trip-length-input'),
+      status: 'pending',
+      suggestedActivities: []
     };
+    e.target.reset();
+    if (futureTripsDisplay.innerText === `No trips? Why don't you book one!`) {
+      futureTripsDisplay.innerHTML = '';
+    }
+    return newTrip;
+  };
+};
 
-  function showPostedTrip(trip) {
-    const formattedTrip = formatPostedTrip(trip);
-    futureTripsDisplay.innerHTML += formattedTrip;
-  }
+function checkDestinationInputVaidity(destinationParam) {
+  const tripNames = destinationRepo.destinations.map(destination => destination.destination);
+  if(tripNames.includes(destinationParam)) {
+    return true;
+  };
+};
 
+function checkDateInputValidity(dateParam) {
+  const splitDate = dateParam.split('/');
+  if (!splitDate.length === 3 || !splitDate[0].length === 4 || splitDate[1] > 12 || splitDate[2] > 31) {
+    return false;
+  } else if (dayjs(dateParam) < Date.now()) {
+    return false;
+  } else {
+    return true;
+  };
+};
 
-function resetTripsDisplay() {
-  pastTripsDisplay.innerHTML = '';
-  futureTripsDisplay.innerHTML = '';
-  presentTripsDisplay.innerHTML = '';
-}
+function showNewTrip(e) {
+  const newTrip = getFormData(e);
+  const postPromise = postNewTrip(newTrip);
+  const newFetchPromise = fetchApiData('http://localhost:3001/api/v1/trips');
+  Promise.all([postPromise, newFetchPromise]).then(value => {
+    tripsRepo = new TripsRepository(value[1].trips);
+    showPostedTrip(value[0].newTrip);
+  });
+};
+
+function formatPostedTrip (trip) {
+  const destination = destinationRepo.getDestinationById(trip.destinationID);
+  const personPeople = formatNumTravelersGrammar(trip.travelers);
+  return `<div class="trip-card">
+    <div class="trip-info-container">
+      <img class= "trip-photo" src="${destination.image}" alt="${destination.alt}">
+      <div class="trip-info-text">
+        <p class="trip-destination-text">${destination.destination}</p>
+        <p class="trip-date-text">${dayjs(trip.date).format('MMM D YYYY')}</p>
+        <p class="trip-people-text">${trip.travelers} ${personPeople}</p>
+      </div>
+    </div>
+    <p class="trip-status">${trip.status}</p>
+  </div>`;
+};
+
+function showPostedTrip(trip) {
+  const formattedTrip = formatPostedTrip(trip);
+  futureTripsDisplay.innerHTML += formattedTrip;
+};
 
 export { errorMessage };

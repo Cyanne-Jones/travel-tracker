@@ -91,14 +91,11 @@ width: 300px;
   height: 25px;
 }
 
-.submitTripButton-active:hover {
+#submitTripButton:hover {
   background-color: #8EDCE6;
   cursor: pointer;
 }
 
-.submitTripButton-inactive:hover {
-  cursor: not-allowed
-}
 
 .disclaimer {
   font-style:italic;

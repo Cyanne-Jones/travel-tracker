@@ -11,9 +11,11 @@ function postNewTrip(newTrip) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(newTrip)
   })
-  .then(promise => promise.json())
+  .then(promise => {
+    errorMessage.innerText = '';
+    return checkForError(promise)
+  })
   .catch(error => {
-    console.log('ERROR', error)
     if (error.message === 'Failed to fetch') {
       errorMessage.innerText = 'Failed to fetch new data, pleasae start server.';
     } else {
@@ -23,8 +25,8 @@ function postNewTrip(newTrip) {
 };
 
 const checkForError = (response) => {
-  if (response.status === 422) {
-    throw new Error(`You haven't entered all the information, please try again.`)
+  if (response.status >= 400 && response.status < 500) {
+    throw new Error(`oh no! something went wrong!`)
   } else {
     return response.json()
   }
