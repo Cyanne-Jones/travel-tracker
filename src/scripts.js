@@ -1,21 +1,18 @@
+//IMPORTS
 import './css/styles.css';
-import TravelersRepository from './TravelersRepository';
 import DestinationRepository from './DestinationRepository';
 import TripsRepository from './TripsRepository';
 import Traveler from './Traveler';
 import {fetchApiData, postNewTrip} from './apiCalls.js';
 import dayjs from 'dayjs';
-dayjs().format();
 
 //GLOBAL VARIABLES
-
 var destinationRepo;
 var tripsRepo;
 var traveler;
 let travelerId;
 
 //FETCH CALLS
-
 const tripsPromise = fetchApiData('http://localhost:3001/api/v1/trips');
 const destinationPromise = fetchApiData('http://localhost:3001/api/v1/destinations');
 
@@ -28,16 +25,34 @@ Promise.all([tripsPromise, destinationPromise])
     return errorMessage.innerText = error.message;
 });
 
-function setTripsData(data) {
-  tripsRepo = new TripsRepository(data);
+function getLoginFormData(e) {
+  const loginFormData = new FormData(e.target);
+  if (checkUserNameValidity(loginFormData.get('username-input')) && checkPasswordValidity(loginFormData.get('password-input'))) {
+    fetchApiData(`http://localhost:3001/api/v1/travelers/${checkUserNameValidity(loginFormData.get('username-input'))}`)
+    .then(response => {
+      setTraveler(response);
+      travelerId = response.id;
+      showTravelerInfo(traveler);
+      main.classList.remove('hidden');
+      loginForm.classList.add('hidden');
+    })
+    .catch(error => {
+      errorMessage.innerText = error.message;
+    });
+  } else {
+    errorMessage.innerText = `invalid login information, please try again.`;
+  }
 };
 
-function setDestinationData(data) {
-  destinationRepo = new DestinationRepository(data);
-};
-
-function setTraveler(user) {
-  traveler = new Traveler(user);
+function fetchNewTrip(e) {
+  const newTrip = getFormData(e);
+  const postPromise = postNewTrip(newTrip);
+  const newFetchPromise = fetchApiData('http://localhost:3001/api/v1/trips');
+  Promise.all([postPromise, newFetchPromise]).then(value => {
+    tripsRepo = new TripsRepository(value[1].trips);
+    showPostedTrip(value[0].newTrip);
+    totalCostUserTrip.innerText = calculateInputtedTripCost(value[0].newTrip);
+  });
 };
 
 //QUERY SELECTORS
@@ -52,10 +67,25 @@ var form = document.querySelector('.plan-trip-form');
 var totalCostUserTrip = document.querySelector('.total-cost-in-dollars');
 var loginForm = document.querySelector('.login-form');
 var main = document.querySelector('main');
+
+//EVENT LISTENERS
 form.addEventListener('submit', fetchNewTrip);
 loginForm.addEventListener('submit', loginTraveler);
-//DOM MANIPULATION
 
+//FUNCTIONS TO INSTANTIATE CLASSES 
+function setTripsData(data) {
+  tripsRepo = new TripsRepository(data);
+};
+
+function setDestinationData(data) {
+  destinationRepo = new DestinationRepository(data);
+};
+
+function setTraveler(user) {
+  traveler = new Traveler(user);
+};
+
+//DOM MANIPULATION
 function getTravelerTrips(time) {
   const timeTravelersTrips = tripsRepo.getTravelerTripsInTime(travelerId, time);
   if (!timeTravelersTrips[0]) {
@@ -177,17 +207,6 @@ function checkDateInputValidity(dateParam) {
   };
 };
 
-function fetchNewTrip(e) {
-  const newTrip = getFormData(e);
-  const postPromise = postNewTrip(newTrip);
-  const newFetchPromise = fetchApiData('http://localhost:3001/api/v1/trips');
-  Promise.all([postPromise, newFetchPromise]).then(value => {
-    tripsRepo = new TripsRepository(value[1].trips);
-    showPostedTrip(value[0].newTrip);
-    totalCostUserTrip.innerText = calculateInputtedTripCost(value[0].newTrip);
-  });
-};
-
 function formatPostedTrip (trip) {
   const destination = destinationRepo.getDestinationById(trip.destinationID);
   const personPeople = formatNumTravelersGrammar(trip.travelers);
@@ -220,25 +239,6 @@ function loginTraveler(e) {
   e.preventDefault();
   getLoginFormData(e);
 }
-
-function getLoginFormData(e) {
-  const loginFormData = new FormData(e.target);
-  if (checkUserNameValidity(loginFormData.get('username-input')) && checkPasswordValidity(loginFormData.get('password-input'))) {
-    fetchApiData(`http://localhost:3001/api/v1/travelers/${checkUserNameValidity(loginFormData.get('username-input'))}`)
-    .then(response => {
-      setTraveler(response);
-      travelerId = response.id;
-      showTravelerInfo(traveler);
-      main.classList.remove('hidden');
-      loginForm.classList.add('hidden');
-    })
-    .catch(error => {
-      errorMessage.innerText = error.message;
-    });
-  } else {
-    errorMessage.innerText = `invalid login information, please try again.`;
-  }
-};
 
 function checkUserNameValidity(userName) {
   const firstEight = userName.substring(0, 7);
