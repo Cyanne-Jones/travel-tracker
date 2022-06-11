@@ -13,12 +13,11 @@ var travelersRepo;
 var destinationRepo;
 var tripsRepo;
 var traveler;
+let travelerId;
 
 const getRandomID = () => {
   return Math.floor(Math.random() * 49) + 1;
 };
-
-let travelerId = getRandomID();
 
 //FETCH CALLS
 
@@ -28,12 +27,12 @@ const destinationPromise = fetchApiData('http://localhost:3001/api/v1/destinatio
 
 Promise.all([travelersPromise, tripsPromise, destinationPromise])
   .then((value) => {
-    setTravelerData(value[0].travelers);
-    const correctTraveler = getTravelerData();
-    setTraveler(correctTraveler);
+    //setTravelerData(value[0].travelers);
+    //const correctTraveler = getTravelerData();
+    //setTraveler(correctTraveler);
     setTripsData(value[1].trips);
     setDestinationData(value[2].destinations);
-    showTravelerInfo(traveler);
+    //showTravelerInfo(traveler);
   })
   .catch(error => {
     return errorMessage.innerText = error.message;
@@ -70,12 +69,15 @@ var presentTripsDisplay = document.querySelector('.present-trip-display');
 var totalCostForYear = document.querySelector('.total-cost-for-year');
 var form = document.querySelector('.plan-trip-form');
 var totalCostUserTrip = document.querySelector('.total-cost-in-dollars');
+var loginForm = document.querySelector('.login-form');
+var main = document.querySelector('main');
 form.addEventListener('submit', fetchNewTrip);
-
+loginForm.addEventListener('submit', loginTraveler);
 //DOM MANIPULATION
 
 function getTravelerTrips(time) {
   const timeTravelersTrips = tripsRepo.getTravelerTripsInTime(travelerId, time);
+  console.log(timeTravelersTrips);
   if (!timeTravelersTrips[0]) {
     return [`No trips? Why don't you book one!`]
   } else{
@@ -154,7 +156,7 @@ function showTravelerInfo(traveler) {
 function getFormData(e) {
   e.preventDefault();
   const formData = new FormData(e.target);
-  if (checkDestinationInputVaidity(formData.get('destination-datalist')) && checkDateInputValidity(formData.get('departure-date-input'))) {
+  if (checkDestinationInputValidity(formData.get('destination-datalist')) && checkDateInputValidity(formData.get('departure-date-input'))) {
     const newTrip = {
       id: tripsRepo.trips.length + 1,
       userID: travelerId,
@@ -177,7 +179,7 @@ function checkTripsDisplay() {
   };
 };
 
-function checkDestinationInputVaidity(destinationParam) {
+function checkDestinationInputValidity(destinationParam) {
   const tripNames = destinationRepo.destinations.map(destination => destination.destination);
   if(tripNames.includes(destinationParam)) {
     return true;
@@ -232,6 +234,50 @@ function calculateInputtedTripCost(trip) {
   const destination = destinationRepo.getDestinationById(trip.destinationID)
   const tripCost = ((destination.estimatedFlightCostPerPerson * trip.travelers) + (destination.estimatedLodgingCostPerDay * trip.duration * trip.travelers))
   return `$${(tripCost * 1.1).toFixed(2)}*`;
+};
+
+function loginTraveler(e) {
+  e.preventDefault();
+  getLoginFormData(e)
+}
+
+function getLoginFormData(e) {
+  e.preventDefault();
+  const loginFormData = new FormData(e.target);
+  if (checkUserNameValidity(loginFormData.get('username-input')) && checkPasswordValidity(loginFormData.get('password-input'))) {
+    fetchApiData(`http://localhost:3001/api/v1/travelers/${checkUserNameValidity(loginFormData.get('username-input'))}`)
+    .then(response => {
+      e.preventDefault();
+      setTraveler(response);
+      travelerId = response.id;
+      showTravelerInfo(traveler);
+      main.classList.remove('hidden');
+      loginForm.classList.add('hidden');
+    })
+    .catch(error => {
+      console.log('error ',error)
+      errorMessage.innerText = error.message;
+    });
+  } else {
+    errorMessage.innerText = `invalid login information, please try again.`
+  }
+};
+
+function checkUserNameValidity(userName) {
+  const firstEight = userName.substring(0, 7);
+  const userNameNumber = userName.substring(8);
+
+  if(!firstEight === 'traveler'|| parseInt(userNameNumber) > 50) {
+    return false;
+  } else {
+    return parseInt(userNameNumber);
+  };
+};
+
+function checkPasswordValidity(password) {
+  if (password === 'traveler') {
+    return true;
+  };
 };
 
 export { errorMessage };
