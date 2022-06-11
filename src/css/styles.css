@@ -25,6 +25,10 @@ main {
 	align-items: center;
 }
 
+.hidden {
+  display :none;
+}
+
 form,
 .plan-trip-card,
 .trip-cost-display,
