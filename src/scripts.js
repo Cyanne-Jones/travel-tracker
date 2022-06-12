@@ -1,63 +1,58 @@
+//IMPORTS
 import './css/styles.css';
-import TravelersRepository from './TravelersRepository';
 import DestinationRepository from './DestinationRepository';
 import TripsRepository from './TripsRepository';
 import Traveler from './Traveler';
 import {fetchApiData, postNewTrip} from './apiCalls.js';
 import dayjs from 'dayjs';
-dayjs().format();
 
 //GLOBAL VARIABLES
-
-var travelersRepo;
 var destinationRepo;
 var tripsRepo;
 var traveler;
-
-const getRandomID = () => {
-  return Math.floor(Math.random() * 49) + 1;
-};
-
-let travelerId = getRandomID();
+let travelerId;
 
 //FETCH CALLS
-
-const travelersPromise = fetchApiData('http://localhost:3001/api/v1/travelers');
 const tripsPromise = fetchApiData('http://localhost:3001/api/v1/trips');
 const destinationPromise = fetchApiData('http://localhost:3001/api/v1/destinations');
 
-Promise.all([travelersPromise, tripsPromise, destinationPromise])
+Promise.all([tripsPromise, destinationPromise])
   .then((value) => {
-    setTravelerData(value[0].travelers);
-    const correctTraveler = getTravelerData();
-    setTraveler(correctTraveler);
-    setTripsData(value[1].trips);
-    setDestinationData(value[2].destinations);
-    showTravelerInfo(traveler);
+    setTripsData(value[0].trips);
+    setDestinationData(value[1].destinations);
   })
   .catch(error => {
     return errorMessage.innerText = error.message;
 });
 
-function setTravelerData(data) {
-  travelersRepo = new TravelersRepository(data);
+function getLoginFormData(e) {
+  const loginFormData = new FormData(e.target);
+  if (checkUserNameValidity(loginFormData.get('username-input')) && checkPasswordValidity(loginFormData.get('password-input'))) {
+    fetchApiData(`http://localhost:3001/api/v1/travelers/${checkUserNameValidity(loginFormData.get('username-input'))}`)
+    .then(response => {
+      setTraveler(response);
+      travelerId = response.id;
+      showTravelerInfo(traveler);
+      main.classList.remove('hidden');
+      loginForm.classList.add('hidden');
+    })
+    .catch(error => {
+      errorMessage.innerText = error.message;
+    });
+  } else {
+    errorMessage.innerText = `invalid login information, please try again.`;
+  }
 };
 
-function setTripsData(data) {
-  tripsRepo = new TripsRepository(data);
-};
-
-function setDestinationData(data) {
-  destinationRepo = new DestinationRepository(data);
-};
-
-function getTravelerData() {
-  var correctTraveler = travelersRepo.getTravelerByIdNum(travelerId);
-  return correctTraveler;
-};
-
-function setTraveler(user) {
-  traveler = new Traveler(user);
+function fetchNewTrip(e) {
+  const newTrip = getFormData(e);
+  const postPromise = postNewTrip(newTrip);
+  const newFetchPromise = fetchApiData('http://localhost:3001/api/v1/trips');
+  Promise.all([postPromise, newFetchPromise]).then(value => {
+    tripsRepo = new TripsRepository(value[1].trips);
+    showPostedTrip(value[0].newTrip);
+    totalCostUserTrip.innerText = calculateInputtedTripCost(value[0].newTrip);
+  });
 };
 
 //QUERY SELECTORS
@@ -70,10 +65,27 @@ var presentTripsDisplay = document.querySelector('.present-trip-display');
 var totalCostForYear = document.querySelector('.total-cost-for-year');
 var form = document.querySelector('.plan-trip-form');
 var totalCostUserTrip = document.querySelector('.total-cost-in-dollars');
+var loginForm = document.querySelector('.login-form');
+var main = document.querySelector('main');
+
+//EVENT LISTENERS
 form.addEventListener('submit', fetchNewTrip);
+loginForm.addEventListener('submit', loginTraveler);
+
+//FUNCTIONS TO INSTANTIATE CLASSES 
+function setTripsData(data) {
+  tripsRepo = new TripsRepository(data);
+};
+
+function setDestinationData(data) {
+  destinationRepo = new DestinationRepository(data);
+};
+
+function setTraveler(user) {
+  traveler = new Traveler(user);
+};
 
 //DOM MANIPULATION
-
 function getTravelerTrips(time) {
   const timeTravelersTrips = tripsRepo.getTravelerTripsInTime(travelerId, time);
   if (!timeTravelersTrips[0]) {
@@ -154,7 +166,7 @@ function showTravelerInfo(traveler) {
 function getFormData(e) {
   e.preventDefault();
   const formData = new FormData(e.target);
-  if (checkDestinationInputVaidity(formData.get('destination-datalist')) && checkDateInputValidity(formData.get('departure-date-input'))) {
+  if (checkDestinationInputValidity(formData.get('destination-datalist')) && checkDateInputValidity(formData.get('departure-date-input'))) {
     const newTrip = {
       id: tripsRepo.trips.length + 1,
       userID: travelerId,
@@ -177,7 +189,7 @@ function checkTripsDisplay() {
   };
 };
 
-function checkDestinationInputVaidity(destinationParam) {
+function checkDestinationInputValidity(destinationParam) {
   const tripNames = destinationRepo.destinations.map(destination => destination.destination);
   if(tripNames.includes(destinationParam)) {
     return true;
@@ -193,17 +205,6 @@ function checkDateInputValidity(dateParam) {
   } else {
     return true;
   };
-};
-
-function fetchNewTrip(e) {
-  const newTrip = getFormData(e);
-  const postPromise = postNewTrip(newTrip);
-  const newFetchPromise = fetchApiData('http://localhost:3001/api/v1/trips');
-  Promise.all([postPromise, newFetchPromise]).then(value => {
-    tripsRepo = new TripsRepository(value[1].trips);
-    showPostedTrip(value[0].newTrip);
-    totalCostUserTrip.innerText = calculateInputtedTripCost(value[0].newTrip);
-  });
 };
 
 function formatPostedTrip (trip) {
@@ -225,6 +226,7 @@ function formatPostedTrip (trip) {
 function showPostedTrip(trip) {
   const formattedTrip = formatPostedTrip(trip);
   futureTripsDisplay.innerHTML += formattedTrip;
+  totalCostUserTrip.innerText = '';
   totalCostUserTrip.innerText = calculateInputtedTripCost(trip);
 };
 
@@ -232,6 +234,28 @@ function calculateInputtedTripCost(trip) {
   const destination = destinationRepo.getDestinationById(trip.destinationID)
   const tripCost = ((destination.estimatedFlightCostPerPerson * trip.travelers) + (destination.estimatedLodgingCostPerDay * trip.duration * trip.travelers))
   return `$${(tripCost * 1.1).toFixed(2)}*`;
+};
+
+function loginTraveler(e) {
+  e.preventDefault();
+  getLoginFormData(e);
+}
+
+function checkUserNameValidity(userName) {
+  const firstEight = userName.substring(0, 7);
+  const userNameNumber = userName.substring(8);
+
+  if(!firstEight === 'traveler'|| parseInt(userNameNumber) > 50) {
+    return false;
+  } else {
+    return parseInt(userNameNumber);
+  };
+};
+
+function checkPasswordValidity(password) {
+  if (password === 'traveler') {
+    return true;
+  };
 };
 
 export { errorMessage };

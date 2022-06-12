@@ -25,6 +25,10 @@ main {
 	align-items: center;
 }
 
+.hidden {
+  display :none;
+}
+
 form,
 .plan-trip-card,
 .trip-cost-display,
@@ -89,12 +93,14 @@ width: 300px;
 }
 
 .total-cost-box,
-#submitTripButton {
+#submitTripButton,
+#loginButton {
   width: 175px;
   border-radius: 10px;
 }
 
-#submitTripButton {
+#submitTripButton,
+#loginButton {
   background-color: #A7B0CA;
   font-family: 'Josefin Sans', sans-serif;
   border: none;
@@ -104,6 +110,11 @@ width: 300px;
 
 #submitTripButton:hover {
   background-color: #8EDCE6;
+  cursor: pointer;
+}
+
+#loginButton:hover {
+  background-color: #c7a9dd;
   cursor: pointer;
 }
 
