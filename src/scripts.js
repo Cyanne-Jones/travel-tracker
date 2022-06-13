@@ -33,8 +33,6 @@ function getLoginFormData(e) {
       setTraveler(response);
       travelerId = response.id;
       showTravelerInfo(traveler);
-      main.classList.remove('hidden');
-      loginForm.classList.add('hidden');
     })
     .catch(error => {
       errorMessage.innerText = error.message;
@@ -141,7 +139,7 @@ function getTravelerCostOverYear() {
   if (travelerPresentTrip[0]) {
     travelerPastTrips.push(travelerPresentTrip[0]);
   };
-  const travelerTripsThisYear = travelerPastTrips.filter(trip => dayjs(trip.date).isAfter('2021', 'year'));
+  const travelerTripsThisYear = travelerPastTrips.filter(trip => dayjs(trip.date).isAfter([dayjs(Date.now()).subtract(1, 'year')], 'year'));
   const travelerCostOverYear = travelerTripsThisYear.reduce((totalCost, currentTrip) => {
     const destination = destinationRepo.getDestinationById(currentTrip.destinationID);
     totalCost += ((destination.estimatedFlightCostPerPerson * currentTrip.travelers) + (destination.estimatedLodgingCostPerDay * currentTrip.duration * currentTrip.travelers));
@@ -155,6 +153,9 @@ function showTravelerCostOverYear() {
 };
 
 function showTravelerInfo(traveler) {
+  errorMessage.innerText = '';
+  main.classList.remove('hidden');
+  loginForm.classList.add('hidden');
   userGreetingText.innerText = `hello, ${traveler.returnFirstName()}!`;
   todaysDateText.innerText = `today's date is ${dayjs(Date.now()).format('ddd MMM D YYYY')}`;
   showTravelerTrips('past');
@@ -178,7 +179,6 @@ function getFormData(e) {
       suggestedActivities: []
     };
     e.target.reset();
-    checkTripsDisplay();
     return newTrip;
   };
 };
@@ -225,6 +225,7 @@ function formatPostedTrip (trip) {
 
 function showPostedTrip(trip) {
   const formattedTrip = formatPostedTrip(trip);
+  checkTripsDisplay();
   futureTripsDisplay.innerHTML += formattedTrip;
   totalCostUserTrip.innerText = '';
   totalCostUserTrip.innerText = calculateInputtedTripCost(trip);
