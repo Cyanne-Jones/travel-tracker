@@ -118,7 +118,6 @@ width: 300px;
   cursor: pointer;
 }
 
-
 .disclaimer {
   font-style:italic;
   font-weight: light;
@@ -153,7 +152,6 @@ width: 300px;
   border-radius: 5px;
 }
 
-
 .trip-photo,
 .trip-info-text {
   height: 60px;
@@ -180,4 +178,3 @@ width: 300px;
 .trip-status {
   padding: 8px;
 }
-

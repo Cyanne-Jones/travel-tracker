@@ -33,15 +33,13 @@ function getLoginFormData(e) {
       setTraveler(response);
       travelerId = response.id;
       showTravelerInfo(traveler);
-      main.classList.remove('hidden');
-      loginForm.classList.add('hidden');
     })
     .catch(error => {
       errorMessage.innerText = error.message;
     });
   } else {
     errorMessage.innerText = `invalid login information, please try again.`;
-  }
+  };
 };
 
 function fetchNewTrip(e) {
@@ -85,11 +83,36 @@ function setTraveler(user) {
   traveler = new Traveler(user);
 };
 
+//GET FORM DATA AND USER LOGIN
+function getFormData(e) {
+  e.preventDefault();
+  const formData = new FormData(e.target);
+  if (checkDestinationInputValidity(formData.get('destination-datalist')) && checkDateInputValidity(formData.get('departure-date-input'))) {
+    const newTrip = {
+      id: tripsRepo.trips.length + 1,
+      userID: travelerId,
+      destinationID: (destinationRepo.destinations.find(destination => destination.destination === formData.get('destination-datalist'))).id,
+      travelers: formData.get('number-people-input'),
+      date: formData.get('departure-date-input'),
+      duration: formData.get('trip-length-input'),
+      status: 'pending',
+      suggestedActivities: []
+    };
+    e.target.reset();
+    return newTrip;
+  };
+};
+
+function loginTraveler(e) {
+  e.preventDefault();
+  getLoginFormData(e);
+};
+
 //DOM MANIPULATION
-function getTravelerTrips(time) {
+function formatTravelerTrips(time) {
   const timeTravelersTrips = tripsRepo.getTravelerTripsInTime(travelerId, time);
   if (!timeTravelersTrips[0]) {
-    return [`No trips? Why don't you book one!`]
+    return [`No trips? Why don't you book one!`];
   } else{
   const formattedTrips = timeTravelersTrips.map(trip => {
     const destination = destinationRepo.getDestinationById(trip.destinationID);
@@ -107,19 +130,11 @@ function getTravelerTrips(time) {
     </div>`;
   });
   return formattedTrips;
- }
-};
-
-function formatNumTravelersGrammar(num) {
-  if (num === 1) {
-    return 'person';
-  } else {
-    return 'people';
-  };
+ };
 };
 
 function showTravelerTrips(time) {
-  const userTrips = getTravelerTrips(time);
+  const userTrips = formatTravelerTrips(time);
   if(time === 'past') {
     userTrips.forEach(trip => {
       pastTripsDisplay.innerHTML += trip;
@@ -135,26 +150,14 @@ function showTravelerTrips(time) {
   };
 };
 
-function getTravelerCostOverYear() {
-  const travelerPastTrips = tripsRepo.getTravelerTripsInTime(travelerId, 'past');
-  const travelerPresentTrip = tripsRepo.getTravelerTripsInTime(travelerId, 'present');
-  if (travelerPresentTrip[0]) {
-    travelerPastTrips.push(travelerPresentTrip[0]);
-  };
-  const travelerTripsThisYear = travelerPastTrips.filter(trip => dayjs(trip.date).isAfter('2021', 'year'));
-  const travelerCostOverYear = travelerTripsThisYear.reduce((totalCost, currentTrip) => {
-    const destination = destinationRepo.getDestinationById(currentTrip.destinationID);
-    totalCost += ((destination.estimatedFlightCostPerPerson * currentTrip.travelers) + (destination.estimatedLodgingCostPerDay * currentTrip.duration * currentTrip.travelers));
-    return totalCost;
-  }, 0);
-  return (travelerCostOverYear * 1.1).toFixed(2);
-};
-
 function showTravelerCostOverYear() {
   totalCostForYear.innerText = `$${getTravelerCostOverYear()} spent this year* (not including upcoming trips)`;
 };
 
 function showTravelerInfo(traveler) {
+  errorMessage.innerText = '';
+  main.classList.remove('hidden');
+  loginForm.classList.add('hidden');
   userGreetingText.innerText = `hello, ${traveler.returnFirstName()}!`;
   todaysDateText.innerText = `today's date is ${dayjs(Date.now()).format('ddd MMM D YYYY')}`;
   showTravelerTrips('past');
@@ -163,47 +166,9 @@ function showTravelerInfo(traveler) {
   showTravelerCostOverYear();
 };
 
-function getFormData(e) {
-  e.preventDefault();
-  const formData = new FormData(e.target);
-  if (checkDestinationInputValidity(formData.get('destination-datalist')) && checkDateInputValidity(formData.get('departure-date-input'))) {
-    const newTrip = {
-      id: tripsRepo.trips.length + 1,
-      userID: travelerId,
-      destinationID: (destinationRepo.destinations.find(destination => destination.destination === formData.get('destination-datalist'))).id,
-      travelers: formData.get('number-people-input'),
-      date: formData.get('departure-date-input'),
-      duration: formData.get('trip-length-input'),
-      status: 'pending',
-      suggestedActivities: []
-    };
-    e.target.reset();
-    checkTripsDisplay();
-    return newTrip;
-  };
-};
-
 function checkTripsDisplay() {
   if (futureTripsDisplay.innerText === `No trips? Why don't you book one!`) {
     futureTripsDisplay.innerHTML = '';
-  };
-};
-
-function checkDestinationInputValidity(destinationParam) {
-  const tripNames = destinationRepo.destinations.map(destination => destination.destination);
-  if(tripNames.includes(destinationParam)) {
-    return true;
-  };
-};
-
-function checkDateInputValidity(dateParam) {
-  const splitDate = dateParam.split('/');
-  if (!splitDate.length === 3 || !splitDate[0].length === 4 || splitDate[1] > 12 || splitDate[2] > 31) {
-    return false;
-  } else if (dayjs(dateParam) < Date.now()) {
-    return false;
-  } else {
-    return true;
   };
 };
 
@@ -225,26 +190,16 @@ function formatPostedTrip (trip) {
 
 function showPostedTrip(trip) {
   const formattedTrip = formatPostedTrip(trip);
+  checkTripsDisplay();
   futureTripsDisplay.innerHTML += formattedTrip;
   totalCostUserTrip.innerText = '';
   totalCostUserTrip.innerText = calculateInputtedTripCost(trip);
 };
 
-function calculateInputtedTripCost(trip) {
-  const destination = destinationRepo.getDestinationById(trip.destinationID)
-  const tripCost = ((destination.estimatedFlightCostPerPerson * trip.travelers) + (destination.estimatedLodgingCostPerDay * trip.duration * trip.travelers))
-  return `$${(tripCost * 1.1).toFixed(2)}*`;
-};
-
-function loginTraveler(e) {
-  e.preventDefault();
-  getLoginFormData(e);
-}
-
+// CHECK USER INPUT VALIDITY FUNCTIONS
 function checkUserNameValidity(userName) {
   const firstEight = userName.substring(0, 7);
   const userNameNumber = userName.substring(8);
-
   if(!firstEight === 'traveler'|| parseInt(userNameNumber) > 50) {
     return false;
   } else {
@@ -255,6 +210,54 @@ function checkUserNameValidity(userName) {
 function checkPasswordValidity(password) {
   if (password === 'traveler') {
     return true;
+  };
+};
+
+function checkDateInputValidity(dateParam) {
+  const splitDate = dateParam.split('/');
+  if (!splitDate.length === 3 || !splitDate[0].length === 4 || splitDate[1] > 12 || splitDate[2] > 31) {
+    return false;
+  } else if (dayjs(dateParam) < Date.now()) {
+    return false;
+  } else {
+    return true;
+  };
+};
+
+function checkDestinationInputValidity(destinationParam) {
+  const tripNames = destinationRepo.destinations.map(destination => destination.destination);
+  if(tripNames.includes(destinationParam)) {
+    return true;
+  };
+};
+
+// CALCULATION FUNCTIONS
+function calculateInputtedTripCost(trip) {
+  const destination = destinationRepo.getDestinationById(trip.destinationID)
+  const tripCost = ((destination.estimatedFlightCostPerPerson * trip.travelers) + (destination.estimatedLodgingCostPerDay * trip.duration * trip.travelers))
+  return `$${(tripCost * 1.1).toFixed(2)}*`;
+};
+
+function getTravelerCostOverYear() {
+  const travelerPastTrips = tripsRepo.getTravelerTripsInTime(travelerId, 'past');
+  const travelerPresentTrip = tripsRepo.getTravelerTripsInTime(travelerId, 'present');
+  if (travelerPresentTrip[0]) {
+    travelerPastTrips.push(travelerPresentTrip[0]);
+  };
+  const travelerTripsThisYear = travelerPastTrips.filter(trip => dayjs(trip.date).isAfter([dayjs(Date.now()).subtract(1, 'year')], 'year'));
+  const travelerCostOverYear = travelerTripsThisYear.reduce((totalCost, currentTrip) => {
+    const destination = destinationRepo.getDestinationById(currentTrip.destinationID);
+    totalCost += ((destination.estimatedFlightCostPerPerson * currentTrip.travelers) + (destination.estimatedLodgingCostPerDay * currentTrip.duration * currentTrip.travelers));
+    return totalCost;
+  }, 0);
+  return (travelerCostOverYear * 1.1).toFixed(2);
+};
+
+function formatNumTravelersGrammar(num) {
+  if (num === 1) {
+    return 'person';
+  } else {
+    return 'people';
   };
 };
 
