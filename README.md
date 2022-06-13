@@ -18,6 +18,11 @@ Now that you've got both local servers running, just log in using your credentia
 
 Of course you do! Simply choose a destination from the drop down menu, or begin typing out your destination so you don't have to scroll through so many cities! Then choose how many people you're traveling with, how many days you'd like to be away for, and the date on which you'd like to leave and BOOM! you know how much this trip will cost (with a 10% traveler agent fee), and it'll appear in your upcoming trips with a status of `pending` until one of our travel agents is able to process your request!
 
+## See it in action!
+
+![travel-tracker](https://user-images.githubusercontent.com/98280256/173420690-a4ebf199-1f3a-4df3-8442-e8402c70e1dd.gif)
+
+
 ## Technologies used
 
 - Vanilla JavaScript
