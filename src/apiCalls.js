@@ -17,7 +17,7 @@ function postNewTrip(newTrip) {
   })
   .catch(error => {
     if (error.message === 'Failed to fetch') {
-      errorMessage.innerText = 'Failed to fetch new data, pleasae start server.';
+      errorMessage.innerText = 'Failed to fetch new data, please start server.';
     } else {
       errorMessage.innerText = error.message;
     };
