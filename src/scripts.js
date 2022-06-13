@@ -39,7 +39,7 @@ function getLoginFormData(e) {
     });
   } else {
     errorMessage.innerText = `invalid login information, please try again.`;
-  }
+  };
 };
 
 function fetchNewTrip(e) {
@@ -112,7 +112,7 @@ function loginTraveler(e) {
 function formatTravelerTrips(time) {
   const timeTravelersTrips = tripsRepo.getTravelerTripsInTime(travelerId, time);
   if (!timeTravelersTrips[0]) {
-    return [`No trips? Why don't you book one!`]
+    return [`No trips? Why don't you book one!`];
   } else{
   const formattedTrips = timeTravelersTrips.map(trip => {
     const destination = destinationRepo.getDestinationById(trip.destinationID);
@@ -130,7 +130,7 @@ function formatTravelerTrips(time) {
     </div>`;
   });
   return formattedTrips;
- }
+ };
 };
 
 function showTravelerTrips(time) {
@@ -196,11 +196,10 @@ function showPostedTrip(trip) {
   totalCostUserTrip.innerText = calculateInputtedTripCost(trip);
 };
 
-// CHECK USER INOUT VALIDITY FUNCTIONS
+// CHECK USER INPUT VALIDITY FUNCTIONS
 function checkUserNameValidity(userName) {
   const firstEight = userName.substring(0, 7);
   const userNameNumber = userName.substring(8);
-
   if(!firstEight === 'traveler'|| parseInt(userNameNumber) > 50) {
     return false;
   } else {
