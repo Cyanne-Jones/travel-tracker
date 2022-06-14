@@ -208,7 +208,7 @@ function checkUserNameValidity(userName) {
 };
 
 function checkPasswordValidity(password) {
-  if (password === 'traveler') {
+  if (password === 'travel') {
     return true;
   };
 };
